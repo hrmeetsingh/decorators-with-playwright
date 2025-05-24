@@ -1,14 +1,13 @@
 import { test as baseTest } from '@playwright/test';
 import { DEVICE_CONFIGS } from '../configs/device-configs';
 
-// Metadata storage for test configurations
+// Metadata for tests
 const testMetadata = new Map<Function, {
   deviceConfig?: any;
   shouldSkip?: boolean;
 }>();
 
 
-// Mobile decorator with comprehensive debugging
 export function mobile(...args: any[]): any {
   if (args.length === 2) {
     const [target, context] = args;
@@ -19,7 +18,6 @@ export function mobile(...args: any[]): any {
   throw new Error(`Mobile decorator called with ${args.length} arguments. Expected 2.`);
 }
 
-// Desktop decorator with comprehensive debugging
 export function desktop(...args: any[]): any {
   if (args.length === 2) {
     const [target, context] = args;
@@ -30,7 +28,6 @@ export function desktop(...args: any[]): any {
   throw new Error(`Desktop decorator called with ${args.length} arguments. Expected 2.`);
 }
 
-// Skip decorator with comprehensive debugging
 export function skip(...args: any[]): any {
 
   if (args.length === 2) {
@@ -42,7 +39,6 @@ export function skip(...args: any[]): any {
   throw new Error(`Skip decorator called with ${args.length} arguments. Expected 2.`);
 }
 
-// Helper functions to apply configurations
 function applyMobileConfig(target: Function, context: any): Function {
   if (context.kind !== 'method') {
     throw new Error('Mobile decorator can only be applied to methods');
@@ -93,7 +89,6 @@ export function createConfiguredTest(testFn: Function, testName: string) {
   
   if (metadata?.shouldSkip) {
     return baseTest.skip(testName, async ({ page, context, browser }) => {
-      // This won't run, but we need the signature for TypeScript
       await testFn({ page, context, browser });
     });
   }
@@ -103,15 +98,10 @@ export function createConfiguredTest(testFn: Function, testName: string) {
       // Create new context with device configuration
       const context = await browser.newContext({
         ...metadata.deviceConfig,
-        // Ensure viewport is properly set
         viewport: metadata.deviceConfig.viewport
       });
       
       const page = await context.newPage();
-      
-      // Debug: Log the actual viewport size
-      // console.log(`Test "${testName}" - Expected viewport:`, metadata.deviceConfig.viewport);
-      // console.log(`Test "${testName}" - Actual viewport:`, page.viewportSize());
       
       try {
         // Call the original test function with configured page
@@ -122,7 +112,7 @@ export function createConfiguredTest(testFn: Function, testName: string) {
     });
   }
   
-  // Default test without special configuration - use standard Playwright fixtures
+  // Default test without special configuration - fallback to default Playwright configuration
   return baseTest(testName, async ({ page, context, browser }) => {
     console.log(`Test "${testName}" - Default viewport:`, page.viewportSize());
     await testFn({ page, context, browser });
@@ -140,13 +130,7 @@ export function registerTests(testClass: any) {
     const method = prototype[methodName];
     const testName = methodName.replace(/([A-Z])/g, ' $1').trim().toLowerCase();
     
-    // Debug: Check if metadata exists
     const metadata = testMetadata.get(method);
-    // console.log(`Registering test "${testName}":`, metadata ? 'Has metadata' : 'No metadata');
-    // if (metadata?.deviceConfig) {
-    //   console.log('Device config:', metadata.deviceConfig.viewport);
-    // }
-    
     createConfiguredTest(method, testName);
   });
 }
