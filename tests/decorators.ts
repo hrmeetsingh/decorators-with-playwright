@@ -1,20 +1,5 @@
-import { test as baseTest, devices } from '@playwright/test';
-
-// Device configurations
-const DEVICE_CONFIGS = {
-  mobile: {
-    ...devices['iPhone 13'],
-    viewport: { width: 375, height: 667 },
-    isMobile: true,
-    hasTouch: true
-  },
-  desktop: {
-    viewport: { width: 1920, height: 1080 },
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    isMobile: false,
-    hasTouch: false
-  }
-};
+import { test as baseTest } from '@playwright/test';
+import { DEVICE_CONFIGS } from '../configs/device-configs';
 
 // Metadata storage for test configurations
 const testMetadata = new Map<Function, {
@@ -103,7 +88,6 @@ function applySkipConfig(target: Function, context: any): Function {
   return target;
 }
 
-// Enhanced test function that applies configurations
 export function createConfiguredTest(testFn: Function, testName: string) {
   const metadata = testMetadata.get(testFn);
   
