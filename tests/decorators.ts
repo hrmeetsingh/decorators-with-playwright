@@ -58,7 +58,7 @@ export function skip(...args: any[]): any {
 }
 
 // Helper functions to apply configurations
-function applyMobileConfig(target: any, context: any): Function {
+function applyMobileConfig(target: Function, context: any): Function {
   if (context.kind !== 'method') {
     throw new Error('Mobile decorator can only be applied to methods');
   }
@@ -73,7 +73,7 @@ function applyMobileConfig(target: any, context: any): Function {
   return target;
 }
 
-function applyDesktopConfig(target: any, context: any): Function {
+function applyDesktopConfig(target: Function, context: any): Function {
   if (context.kind !== 'method')  {
     throw new Error('Desktop decorator can only be applied to methods');
   }
@@ -88,7 +88,7 @@ function applyDesktopConfig(target: any, context: any): Function {
   return target;
 }
 
-function applySkipConfig(target: any, context: any): Function {
+function applySkipConfig(target: Function, context: any): Function {
   if (context.kind !== 'method') {
     throw new Error('Skip decorator can only be applied to methods');
   }
