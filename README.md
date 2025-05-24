@@ -19,13 +19,15 @@ A TypeScript project demonstrating the use of custom decorators to simplify and 
 
 ```
 / (root)
-├── playwright.config.ts         # Playwright configuration
-├── package.json                 # Project dependencies and scripts
-├── tsconfig.json                # TypeScript configuration
+├── configs/
+│   └── device-configs.ts         # Device configuration constants (moved from decorators)
+├── playwright.config.ts          # Playwright configuration
+├── package.json                  # Project dependencies and scripts
+├── tsconfig.json                 # TypeScript configuration
 └── tests/
-    ├── decorators.ts            # Core decorators and helpers
-    ├── example.spec.ts          # Example: Class-based tests with decorators
-    └── alternative-usage.ts     # Example: Manual/static method registration
+    ├── decorators.ts             # Core decorators and helpers (now imports device configs)
+    ├── example.spec.ts           # Example: Class-based tests with decorators
+    └── alternative-usage.ts      # Example: Manual/static method registration
 ```
 
 ## Getting Started
