@@ -9,18 +9,19 @@ interface TestContext {
 }
 
 class ResponsiveTests {
+
+  // Verify the viewport is set correctly
   @mobile
   async mobileLoginTest({ page }: TestContext) {
-    // Verify the viewport is set correctly
     const viewport = page.viewportSize();
     console.log('Mobile test viewport:', viewport);
     expect(viewport.width).toBe(375);
     expect(viewport.height).toBe(667);
   }
 
+  // Verify the viewport is set correctly
   @desktop
   async desktopDashboardTest({ page }: TestContext) {
-    // Verify the viewport is set correctly
     const viewport = page.viewportSize();
     console.log('Desktop test viewport:', viewport);
     expect(viewport.width).toBe(1920);
@@ -39,7 +40,6 @@ class ResponsiveTests {
   async defaultConfigTest({ page }: TestContext) {
     const viewport = page.viewportSize();
     console.log('Default test viewport:', viewport);
-    
     expect(viewport.width).toBe(1280);
     expect(viewport.height).toBe(720);
   }
