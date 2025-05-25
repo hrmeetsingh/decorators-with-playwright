@@ -11,60 +11,8 @@ const testMetadata = new Map<Function, {
 }>();
 
 
-/** Viewport decorators */
-export function mobile(...args: any[]): any {
-  if (args.length === 2) {
-    const [target, context] = args;
-    return applyMobileConfig(target, context);
-  }
-  console.error('Mobile decorator called with unexpected arguments:', args);
-  throw new Error(`Mobile decorator called with ${args.length} arguments. Expected 2.`);
-}
-
-export function desktop(...args: any[]): any {
-  if (args.length === 2) {
-    const [target, context] = args;
-    return applyDesktopConfig(target, context);
-  }
-  console.error('Desktop decorator called with unexpected arguments:', args);
-  throw new Error(`Desktop decorator called with ${args.length} arguments. Expected 2.`);
-}
-
-/** Test skipping decorators */
-
-export function skip(...args: any[]): any {
-  if (args.length === 2) {
-    const [target, context] = args;
-    return applySkipConfig(target, context);
-  }
-  console.error('Skip decorator called with unexpected arguments:', args);
-  throw new Error(`Skip decorator called with ${args.length} arguments. Expected 2.`);
-}
-
-/** Location decorators */
-export function london(...args: any[]): any {
-  if (args.length === 2) {
-    const [target, context] = args;
-    return applyLondonLocationConfig(target, context);
-  }
-  
-  console.error('Location decorator called with unexpected arguments:', args);
-  throw new Error(`Location decorator called with ${args.length} arguments. Expected 2.`);
-}
-
-export function newyork(...args: any[]): any {
-  if (args.length === 2) {
-    const [target, context] = args;
-    return applyNewyorkLocationConfig(target, context);
-  }
-  
-  console.error('New York decorator called with unexpected arguments:', args);
-  throw new Error(`New York decorator called with ${args.length} arguments. Expected 2.`);
-}
-
-/** Internal helper functions */
-
-function applyMobileConfig(target: Function, context: DecoratorContext): Function {
+// Viewport decorators
+export function mobile(target: Function, context: DecoratorContext): Function {
   if (context.kind !== 'method') {
     throw new Error('Mobile decorator can only be applied to methods');
   }
@@ -79,7 +27,7 @@ function applyMobileConfig(target: Function, context: DecoratorContext): Functio
   return target;
 }
 
-function applyDesktopConfig(target: Function, context: DecoratorContext): Function {
+export function desktop(target: Function, context: DecoratorContext): Function {
   if (context.kind !== 'method')  {
     throw new Error('Desktop decorator can only be applied to methods');
   }
@@ -94,7 +42,8 @@ function applyDesktopConfig(target: Function, context: DecoratorContext): Functi
   return target;
 }
 
-function applySkipConfig(target: Function, context: DecoratorContext): Function {
+// Test skipping decorators
+export function skip(target: Function, context: DecoratorContext): Function {
   if (context.kind !== 'method') {
     throw new Error('Skip decorator can only be applied to methods');
   }
@@ -109,7 +58,8 @@ function applySkipConfig(target: Function, context: DecoratorContext): Function 
   return target;
 }
 
-function applyLondonLocationConfig(target: Function, context: DecoratorContext): Function {
+// Geolocation decorators 
+export function london(target: Function, context: DecoratorContext): Function {
   if (context.kind !== 'method') {
     throw new Error('London decorator can only be applied to methods');
   }
@@ -124,7 +74,7 @@ function applyLondonLocationConfig(target: Function, context: DecoratorContext):
   return target;
 }
 
-function applyNewyorkLocationConfig(target: Function, context: DecoratorContext): Function {
+export function newyork(target: Function, context: DecoratorContext): Function {
   if (context.kind !== 'method') {
     throw new Error('New York decorator can only be applied to methods');
   }
@@ -140,6 +90,7 @@ function applyNewyorkLocationConfig(target: Function, context: DecoratorContext)
 }
   
 
+// Internal helper functions
 export function createConfiguredTest(testFn: Function, testName: string) {
   const metadata = testMetadata.get(testFn);
   
@@ -180,7 +131,6 @@ export function createConfiguredTest(testFn: Function, testName: string) {
       const page = await context.newPage();
       
       try {
-        // Call the original test function with configured page
         await testFn({ page, context, browser });
       } finally {
         await context.close();
@@ -191,7 +141,6 @@ export function createConfiguredTest(testFn: Function, testName: string) {
   
   // Default test without special configuration - fallback to default Playwright configuration
   return baseTest(testName, async ({ page, context, browser }) => {
-    // console.log(`Test "${testName}" - Default viewport:`, page.viewportSize());
     await testFn({ page, context, browser });
   });
 }
