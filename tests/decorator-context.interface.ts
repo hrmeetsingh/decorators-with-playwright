@@ -1,4 +1,4 @@
-// Interface for decorator context (used in apply*Config helpers)
+// Interface for decorator context
 export interface DecoratorContext {
   kind: 'method' | string;
   name?: string;
